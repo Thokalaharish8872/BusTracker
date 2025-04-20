@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">BusTracker</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title_activity_maps1">MapsActivity1</string>
+    <string name="openDrawer">open Drawer</string>
+    <string name="closeDrawer">Close Drawer</string>
+    <string name="GoogleMapsKey">AIzaSyCRYpOe-5CXHTc4w25mrnXWPvOrPI1X3qE</string>
+</resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="@dimen/_250sdp"
+    android:layout_height="wrap_content"
+    android:background="#1EAB20"
+    android:gravity="center">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add new Bus"
+        android:textSize="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textColor="@color/white"/>
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="@dimen/_220sdp"
+            android:layout_height="@dimen/_55sdp"
+            android:layout_marginTop="@dimen/_10sdp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/CollegeName"
+                android:layout_width="@dimen/_220sdp"
+                android:layout_height="@dimen/_40sdp"
+
+                android:background="@color/white"
+                android:hint="College Name"
+
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_width="@dimen/_220sdp"
+            android:layout_height="@dimen/_55sdp"
+            app:startIconDrawable="@drawable/email_asset"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/BusNumber"
+                android:layout_width="@dimen/_220sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:hint="BusNumber"
+
+                android:background="@color/white"
+
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+
+        android:layout_width="@dimen/_220sdp"
+        android:layout_height="@dimen/_55sdp"
+        app:startIconDrawable="@drawable/email_asset"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Start"
+            android:layout_width="@dimen/_220sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:hint="Stating Stop"
+            android:background="@color/white"
+
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/addbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:backgroundTint="#69F249"/>
+
+</LinearLayout>

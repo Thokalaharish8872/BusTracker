@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/Home"
+        android:title="Home"
+        android:iconTint="@color/red"
+        android:icon="@drawable/baseline_home_24"/>
+
+    <item android:id="@+id/Directions"
+        android:title="Diretions"
+        android:icon="@drawable/baseline_fork_right_24"/>
+
+    <item android:id="@+id/Favourites"
+        android:title="Favorites"
+        android:icon="@drawable/baseline_star_border_24"/>
+
+    <item android:id="@+id/Rewards"
+        android:title="Rewards"
+        android:icon="@drawable/baseline_refresh_24"/>
+
+    <item android:id="@+id/More"
+        android:title="Profile"
+        android:icon="@drawable/baseline_person_24"/>
+</menu>
