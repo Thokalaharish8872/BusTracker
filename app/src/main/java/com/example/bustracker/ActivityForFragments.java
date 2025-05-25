@@ -2,13 +2,17 @@ package com.example.bustracker;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.BlendModeColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.ActionProvider;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +48,9 @@ public class ActivityForFragments extends AppCompatActivity {
     FavoritesFragment favoritesFragment = new FavoritesFragment();
     AwardsFragment awardsFragment = new AwardsFragment();
     ProfileFragment profileFragment = new ProfileFragment();
+    ScaleAnimation scaleAnimation;
+    BottomNavigationView btmView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +58,16 @@ public class ActivityForFragments extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_for_fragments);
 
-        BottomNavigationView btmView = findViewById(R.id.BottomNavigationView);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        btmView = findViewById(R.id.BottomNavigationView);
         MenuItem item = btmView.getMenu().getItem(0);
         SetFrame(homeFragment,true,item);
+
 
         btmView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -71,11 +85,16 @@ public class ActivityForFragments extends AppCompatActivity {
 
      void SetFrame(Fragment fragment, boolean flag, MenuItem item) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
         if(flag) ft.add(R.id.FrameLayout,fragment);
         else ft.replace(R.id.FrameLayout, fragment);
-
-        ft.commit();
+//        scaleAnimation = new ScaleAnimation(1.0f,1.2f,1.0f,1.2f, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
+//
+//        scaleAnimation.setDuration(150);
+//        scaleAnimation.setRepeatCount(1);
+//        scaleAnimation.setRepeatMode(Animation.REVERSE);
+//
+//         btmView.setAnimation(scaleAnimation);
+         ft.commit();
         Drawable icon = item.getIcon();
         if(icon!=null){
             icon = icon.mutate();

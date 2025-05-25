@@ -38,9 +38,7 @@
     <dimen name="dim_210">210dp</dimen>
     <dimen name="dim_380">500dp</dimen>
     <dimen name="dim_400">400dp</dimen>
-
-
-
+    <dimen name="fab_margin">16dp</dimen>
 
 
 </resources>

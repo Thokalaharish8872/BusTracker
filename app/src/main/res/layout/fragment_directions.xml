@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DirectionsFragment"
+    android:layout_marginBottom="@dimen/_30sdp"
     android:background="@drawable/gradient_for_search_activity">
 
     <RelativeLayout
@@ -271,6 +272,7 @@
         android:layout_marginTop="43dp"
         android:background="@drawable/background_for_recycler_view_in_search">
         <ImageView
+            android:id="@+id/dragbtn"
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_30sdp"
             android:scaleType="centerCrop"
@@ -299,8 +301,4 @@
 
 
     </RelativeLayout>
-
-
-
-
 </RelativeLayout>

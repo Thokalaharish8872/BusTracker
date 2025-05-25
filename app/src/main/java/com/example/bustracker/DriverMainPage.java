@@ -37,6 +37,7 @@ public class DriverMainPage extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_CODE = 1001;
     DatabaseReference database;
     FusedLocationProviderClient fusedLocationProviderClient;
+    LocationCallback locationCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class DriverMainPage extends AppCompatActivity {
             return insets;
         });
 
-        Button start = findViewById(R.id.stbtn);
+        Button start = findViewById(R.id.btnStart);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -64,37 +65,45 @@ public class DriverMainPage extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                com.google.android.gms.location.LocationRequest locationRequest = new LocationRequest();
-                locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(2000);
-                locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+                if (start.getText().equals("Share Location")) {
+                    start.setText("Stop Sharing");
+                    com.google.android.gms.location.LocationRequest locationRequest = new LocationRequest();
+                    locationRequest.setInterval(5000);
+                    locationRequest.setFastestInterval(2000);
+                    locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
 
-                LocationCallback locationCallback = new LocationCallback() {
-                    @Override
-                    public void onLocationResult(@NonNull LocationResult locationResult) {
-                        super.onLocationResult(locationResult);
+                     locationCallback = new LocationCallback() {
+                        @Override
+                        public void onLocationResult(@NonNull LocationResult locationResult) {
+                            super.onLocationResult(locationResult);
 
 //                        for(Location location: locationResult.getLocations()){
 
-                            LatLng latLng = new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude());
+                            LatLng latLng = new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude());
 
-                        Toast.makeText(DriverMainPage.this,latLng.latitude+" "+latLng.longitude,Toast.LENGTH_SHORT).show();
+                            double sp = Double.parseDouble(locationResult.getLastLocation().getSpeed() + "");
+//                        Toast.makeText(DriverMainPage.this,latLng.latitude+" "+latLng.longitude,Toast.LENGTH_SHORT).show();
                             database.child("latitude").setValue(latLng.latitude);
                             database.child("longitude").setValue(latLng.longitude);
-
-
+                            database.child("speed").setValue(sp);
 
 //                        }
 
 
+                        }
+                    };
+
+                    if (ActivityCompat.checkSelfPermission(DriverMainPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(DriverMainPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                        return;
                     }
-                };
-
-                if (ActivityCompat.checkSelfPermission(DriverMainPage.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(DriverMainPage.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                    return;
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
                 }
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+                else{
+                    start.setText("Share Location");
+                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+
+                }
             }
         });
     }

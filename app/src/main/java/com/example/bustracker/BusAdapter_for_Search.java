@@ -179,15 +179,14 @@ public class BusAdapter_for_Search extends RecyclerView.Adapter<BusAdapter_for_S
             public void onClick(View v) {
 
                 String waypoints[] = new String[2];
-
+//
                 if(array.get(pos).BusNumber.equals("08")){
-                    waypoints[0 ]= "via:17.35529372435894, 78.55642408980903";
-
+                    waypoints[0]= "via:17.35529372435894, 78.55642408980903";
                 }
-
+//
 
 //                if(array.get(pos).BusNumber.equals("22")) {
-                    Intent i = new Intent(context, GoogleMaps.class);
+                    Intent i = new Intent(context, ActivityForBus.class);
                     i.putExtra("NumberPlate", array.get(pos).NumberPlate);
                     i.putExtra("stops", array.get(pos).stops);
                     i.putExtra("Start", array.get(pos).Start);

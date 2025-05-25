@@ -27,6 +27,8 @@ public class UserTypeActivity extends AppCompatActivity {
 
         LinearLayout Student = findViewById(R.id.StudentLayout);
         LinearLayout Driver = findViewById(R.id.Driver);
+        LinearLayout Admin = findViewById(R.id.AdministratorLayout);
+
 
         Driver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +45,12 @@ public class UserTypeActivity extends AppCompatActivity {
             }
         });
 
-        Toast.makeText(UserTypeActivity.this,"came",Toast.LENGTH_SHORT).show();
+        Admin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(UserTypeActivity.this,AdministratorLogin.class));
+            }
+        });
 
 
     }

@@ -4,22 +4,36 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class BusDriverLogIn extends AppCompatActivity {
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    SharedPreferences sharedPreferences;
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +45,15 @@ public class BusDriverLogIn extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         TextInputEditText studentIdInputText = findViewById(R.id.StudentId);
         TextInputEditText studentPasswordInputText = findViewById(R.id.StudentPassword);
-        Button login = findViewById(R.id.LogInBtn);
+        AppCompatButton login = findViewById(R.id.LogInBtn);
         TextView forgotPassword = findViewById(R.id.Forgotbtn);
-        TextView signUpPagebtn = findViewById(R.id.SignUpBtn);
-        FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("Users",MODE_PRIVATE);
+        reference = FirebaseDatabase.getInstance().getReference("Users").child("Drivers");
+
+        sharedPreferences = getSharedPreferences("Users",MODE_PRIVATE);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,19 +62,22 @@ public class BusDriverLogIn extends AppCompatActivity {
 
                 if(!studentEmail.isEmpty()){
                     if(!studentPassword.isEmpty()){
-                        auth.signInWithEmailAndPassword(studentEmail,studentPassword).addOnCompleteListener(BusDriverLogIn.this,task -> {
-
-                            if(task.isSuccessful()){
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("IsLoggedIn",true);
-                                editor.apply();
-
-                                startActivity(new Intent(BusDriverLogIn.this,DriverMainPage.class));
+                        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if(task.getResult().exists()){
+                                    login(studentEmail,studentPassword);
+                                }
+                                else{
+                                    Toast.makeText(BusDriverLogIn.this,"User Does not Exist",Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }).addOnFailureListener(e -> {
-                            if(e instanceof FirebaseAuthInvalidCredentialsException) Toast.makeText(BusDriverLogIn.this,"Incorrect Password",Toast.LENGTH_SHORT).show();
-                            else if(e instanceof FirebaseAuthInvalidUserException) Toast.makeText(BusDriverLogIn.this,"Account not Registered",Toast.LENGTH_SHORT).show();
-                            else Toast.makeText(BusDriverLogIn.this,"Error :"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(BusDriverLogIn.this,"failure",Toast.LENGTH_SHORT).show();
+
+                            }
                         });
                     }
                     else Toast.makeText(BusDriverLogIn.this,"Password Cannot be Empty",Toast.LENGTH_SHORT).show();
@@ -68,6 +86,23 @@ public class BusDriverLogIn extends AppCompatActivity {
             }
         });
 
-        signUpPagebtn.setOnClickListener(view ->  startActivity(new Intent(BusDriverLogIn.this,SignUp.class)));
+    }
+    private void login(String studentEmail,String studentPassword){
+        auth.signInWithEmailAndPassword(studentEmail,studentPassword).addOnCompleteListener(BusDriverLogIn.this,task -> {
+
+            if(task.isSuccessful()){
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("IsLoggedIn",true);
+                editor.putInt("UserType",1);
+
+                editor.apply();
+
+                startActivity(new Intent(BusDriverLogIn.this,DriverMainPage.class));
+            }
+        }).addOnFailureListener(e -> {
+            if(e instanceof FirebaseAuthInvalidCredentialsException) Toast.makeText(BusDriverLogIn.this,"Incorrect Password",Toast.LENGTH_SHORT).show();
+            else if(e instanceof FirebaseAuthInvalidUserException) Toast.makeText(BusDriverLogIn.this,"Account not Registered",Toast.LENGTH_SHORT).show();
+            else Toast.makeText(BusDriverLogIn.this,"Error :"+e.getMessage(),Toast.LENGTH_SHORT).show();
+        });
     }
 }

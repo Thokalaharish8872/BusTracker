@@ -5,205 +5,118 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".BusDriverLogIn">
+    android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_alignParentEnd="true"
+        android:id="@+id/imageView9"
+        android:layout_width="@dimen/_170sdp"
+        android:layout_height="@dimen/_170sdp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/bus_stop6" />
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:scaleType="fitStart"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:src="@drawable/bus_stop3" />-->
+        android:layout_marginTop="@dimen/_70sdp"
+        android:src="@drawable/bus_driver_img" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout"
+        android:layout_below="@+id/imageView9"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/alegreya"
+        android:text="Welcome to"
+        android:textSize="@dimen/_25ssp" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView11"
+        android:layout_alignStart="@+id/textView11"
         android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginBottom="35dp"
-        android:backgroundTint="#0040FF"
-        android:elevation="@dimen/_5sdp"
-        app:cardCornerRadius="@dimen/_17sdp">
-        <ImageView
-            android:id="@+id/imageVew"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:scaleType="fitStart"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:src="@drawable/bus_logo_for_login" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="@dimen/_55sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:fontFamily="@font/aclonica"
-            android:text="LOGIN"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15ssp" />
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/_37sdp"
-            android:layout_marginStart="@dimen/_50sdp"
-            android:fontFamily="@font/aclonica"
-            android:text="Please fill up the details to login"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_11ssp" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/linearLayout"
-            android:layout_centerHorizontal="true"
-            app:cardCornerRadius="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_60sdp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/background_for_student"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="@dimen/_220sdp"
-                    android:layout_height="@dimen/_55sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/CollegeName"
-                        android:layout_width="@dimen/_220sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:hint="College Name"
-                        android:text="Ace Enginnering College"
-                        android:editable="false"
-
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="@dimen/_220sdp"
-                    android:layout_height="@dimen/_55sdp"
-                    app:startIconDrawable="@drawable/email_asset"
-
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/StudentId"
-                        android:layout_width="@dimen/_220sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:hint="Student ID"
-
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="@dimen/_220sdp"
-                    android:layout_height="@dimen/_60sdp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/StudentPassword"
-                        android:layout_width="@dimen/_220sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:hint="Password"
-
-
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </androidx.cardview.widget.CardView>
-
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/_280sdp">
-
-    </RelativeLayout>
-
-
-
+        android:fontFamily="@font/artifika"
+        android:text="Bus Loc8"
+        android:textSize="@dimen/_25sdp" />
 
 
     <LinearLayout
-
-        android:id="@+id/linearLayout"
+        android:id="@+id/linearLayout12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/textView12"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@drawable/background_for_search"
         android:orientation="vertical">
 
-
-        <Button
-            android:id="@+id/LogInBtn"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="57dp"
-            android:layout_above="@+id/Forgotbtn"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/_30sdp"
-            android:layout_marginEnd="@dimen/_30sdp"
-            android:layout_marginBottom="@dimen/_29sdp"
-            android:backgroundTint="#34F09F"
-            android:text="Login" />
-
-        <TextView
-            android:id="@+id/Forgotbtn"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/SignUpBtn"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="@dimen/_30sdp"
-            android:layout_marginBottom="@dimen/_30sdp"
-            android:text="Forgot Password ?"
-            android:textColor="#949090"
-            android:textSize="@dimen/_12ssp" />
+            app:boxBackgroundMode="none"
 
-        <TextView
-            android:id="@+id/SignUpBtn"
-            android:layout_width="wrap_content"
+            app:startIconDrawable="@drawable/lock_asset"
+            app:startIconTint="#10A810">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/AdminName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Sign Up"
-            android:textColor="#49F26D"
-            android:textSize="@dimen/_14ssp" />
+            app:boxBackgroundMode="none"
+            app:startIconDrawable="@drawable/email_asset"
+            app:startIconTint="#AB9C0E">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/StudentId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email Adress"
+
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxBackgroundMode="none"
+
+            app:startIconDrawable="@drawable/lock_asset"
+            app:startIconTint="#10A810">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/StudentPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-    <!--    </RelativeLayout>-->
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/LogInBtn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_below="@+id/linearLayout12"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:backgroundTint="#22B2D9"
+        android:text="LogIn"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_17sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/_40sdp"/>
 
-
-
-
+    <TextView
+        android:id="@+id/Forgotbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:textSize="@dimen/_12sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_30sdp"/>
 </RelativeLayout>

@@ -133,6 +133,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/AdministratorLayout"
                 android:layout_width="@dimen/_130sdp"
                 android:layout_height="@dimen/_135sdp"
                 android:layout_below="@+id/StudentLayout"
@@ -167,7 +168,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/acme"
-                    android:text="College Management"
+                    android:text="Administrator"
                     android:textSize="@dimen/_12sdp" />
             </LinearLayout>
 

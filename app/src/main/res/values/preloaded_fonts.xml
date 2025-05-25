@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/abel</item>
         <item>@font/aclonica</item>
         <item>@font/acme</item>
         <item>@font/akaya_kanadaka</item>
         <item>@font/akaya_telivigala</item>
+        <item>@font/alegreya</item>
         <item>@font/alkatra</item>
+        <item>@font/allerta_stencil</item>
         <item>@font/amarante</item>
+        <item>@font/andada</item>
+        <item>@font/artifika</item>
         <item>@font/atomic_age</item>
         <item>@font/audiowide</item>
+        <item>@font/baloo_tamma</item>
         <item>@font/bayon</item>
+        <item>@font/contrail_one</item>
         <item>@font/faster_one</item>
+        <item>@font/francois_one</item>
+        <item>@font/goblin_one</item>
     </array>
 </resources>

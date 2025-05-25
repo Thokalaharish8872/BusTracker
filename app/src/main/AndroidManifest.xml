@@ -24,6 +24,29 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ActivityForBus"
+            android:exported="false"
+            android:theme="@style/Theme.BusTracker" />
+        <activity
+            android:name=".AdministratorLogin"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewDriver"
+            android:exported="false"
+            android:theme="@style/Theme.BusTracker" />
+        <activity
+            android:name=".EditExistingDriverDetails"
+            android:exported="false" />
+        <activity
+            android:name=".EditExistingStudentDetails"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewStudent"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityForAdministrator"
+            android:exported="false" />
+        <activity
             android:name=".DriverMainPage"
             android:exported="false" />
         <activity

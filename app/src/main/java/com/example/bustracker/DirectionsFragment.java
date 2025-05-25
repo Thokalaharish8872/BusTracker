@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -15,19 +16,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DirectionsFragment extends Fragment {
     ArrayList<data> arrNames = new ArrayList<>();
@@ -35,6 +40,7 @@ public class DirectionsFragment extends Fragment {
     ArrayList<data> array = new ArrayList<>();
     RecyclerView recyclerView;
     TextInputEditText from,to;
+    private BottomSheetBehavior bottomSheetBehavior;
 
     public DirectionsFragment() {}
 
@@ -50,6 +56,7 @@ public class DirectionsFragment extends Fragment {
         ImageView btnSwap = v.findViewById(R.id.btnSwap);
         recyclerView = v.findViewById(R.id.recyclerView);
         TextView notFound = v.findViewById(R.id.notfound);
+        ImageView dragBtn = v.findViewById(R.id.dragbtn);
 
         reverse(true);
 
@@ -76,7 +83,7 @@ public class DirectionsFragment extends Fragment {
 //        array.add(new data("Yadagiri","19","AP12A6514","8:10","9:25","07","26","17.625152785104927", "78.94833566563422","17.43658129370765", "78.71591244569122"));
 //        array.add(new data("Secundrabad","20","AP02A6274","8:25","9:30","18","48","17.44130296880196", "78.48756486758869","17.43658129370765", "78.71591244569122"));
 //        array.add(new data("JNTU","21","TS14A3467","7:40","9:20","15","56","17.500114170100133", "78.3941790561241","17.43658129370765", "78.71591244569122"));
-        array.add(new data("Madhapur","22","TS07A1654","6:55","9:15","12","39","17.447941527007067", "78.38735251209972","17.43658129370765", "78.71591244569122","{_fiBoym~MUOUA{BVUaECCmBD[DQ_A{ArAg@m@m@[Ha@nAcHh@qDp@aEf@uA`@kAXk@d@i@\\WTOh@]n@WpAo@v@e@l@]f@S~@IhAG@{DAsCDkFE{B@}GC}E@wCCuHC}EC_CC}@Cc@MsA_@iCw@aFKaAEqABa@|A}Kv@kGf@oCFy@?sAEw@Oy@KWW_@m@m@kBcBu@u@s@_A{@kAw@qAoAqBU_@w@iB_@cA_@oAs@mDa@gC_A}E{@_E_@kBeAqE}AcHsB}I{AiHqAcHk@cCiBqJ]yAm@{B{@uCeAeDiA}D}AcG{@eDaA}Da@sA_DkKa@{AU{AEe@A_ARyCRmCDoBKqA]iB{AsFUgAmAoGkAgG_@kBi@}AgAiC{AyCyGmMo@uASi@Ke@UuAY{CWiCQsB_@aFKmDG_DSsE_AaNS}Aa@iBk@{AoAwByI{NgCkE}BuDqA_Cs@gBw@aCeCkHqBeHW{@k@{AcBiDaDkG{@aB}CwFkDgGwB_D_DgEuBgCuBuB{@q@_Am@yAw@_CqAyAiAaBeBuAqBc@y@i@wA}@_DaEkOuBwH{@eDoAaFkAwDo@aBsAgCaAyAe@m@_CoCqEoFqEkFyAiB}BwC]i@y@gB{@eCo@iD]SOCUCm@p@MRGKe@m@qBmCuBsCsAiBwA{BwCeFyDqGq@y@{@{@aAs@}A{AuCsCaDyC_C{Bi@k@^q@|AwBfAwBrBcE~@eBh@q@zCsBn@_@p@u@Xq@^{CTqCb@uDTwBLeAr@kBlA}Cr@_BvAmDVg@j@qAlAsBx@_ApBiB|@u@Zc@Zg@Xy@lAiF\\iBfB}IdA}DrBoG`AcCf@sARw@j@oBVa@VUl@c@`@MtBSfD_@xDe@fDa@dAInAQxBU^GRKXUR[H_@DUBSGc@K_A@i@Fm@\\c@TSb@WjBwAxCwBh@[b@KfAUv@Kd@Gn@CfBKfCOhAIxBU~KaDhA_@hAm@f@a@^c@`@o@~AwDYc@g@g@}CyCwAuAsBiBcCmB{@o@uA{@sGcDuDuBiDkBgEkC_Ao@cB_AoCiAkBi@oCa@GP@FI|@Qd@EPYfAIj@"));
+        array.add(new data("Raigiri","22","TS07A1654","6:55","9:15","12","39","17.51949591331333","78.92110529559483","17.43658129370765", "78.71591244569122",	"}w|iBygu`N{AcBJQ|@~@nAvAj@p@nBfCbAvA|A`CdCdE~BzE|ArDvBdG|@rCbBjHr@zDTvAd@tDZxC^|Ev@rNVlENbCZ|Bf@dCd@|AbAfCn@nAx@rAn@|@lArAzAvAbBlAjAp@rAn@bOdGpQhHlAj@rAr@pAz@jBbBfBlBbAtAz@|An@pAXr@l@jBt@fDVnBPzBDdDErCKtAYbCuBhNaCxNaC|OsH|e@q@hEkBzLc@nEOtBQhFEfHPvH`BzVfAxONbDFh@d@xDpAvIPvAXzDb@fHFfAP`BTvA\\pApAfD`DpHnAzCdFnLtCrGlLdXt@vAbAzAnAxAtDvDhCdCz@z@nA|AxCdEzBzD`@z@jBbEhCzFzDlIbIvQdC|F^bA|CpIhAjCn@pB|@dDVjAtBdIdA`Ex@tD~AdH^`Cp@nGz@xD`@dAd@dAf@z@|EbHlD`FnBtCdBrC~BtDrBjDx@vBXfAX`BL~@V|C`Bx]TzC`@zBh@|An@jA\\f@pBxBxAxAlAlAvB`C~@pA`BlC|BfEtA~B`BrCl@pAh@|AZpALd@XpBLtBFpB\\fLj@fRhA~]l@nPb@|Nn@zRj@xPLtCVrEXrHv@zXh@lQj@vJFx@f@xHh@nIR~Af@lBj@pAv@tA`AzAhE|GhGzJnAdCpAfDTr@`@R^nAT|@TfARfAvAbJ`BxLFn@NhAhBw@x@g@^G`@IpAAh@Hf@n@BJb@j@p@p@d@f@`@\\z@l@r@j@f@j@R\\l@z@~@dAp@~@r@pAt@lAt@xATr@Lt@LbANbBD~AN\\RPRFh@LdAd@nAx@p@v@v@nAdAtAh@h@f@\\j@`@j@`@RZd@?v@B`B@\\H`@HlBr@rAj@n@^h@Hh@Dr@Cb@Q\\g@fBWr@Cb@?NETSj@i@bAcAL]VIr@Qn@A|@IlAMz@Ij@QxBy@nBs@lA[l@c@Q`@Qt@SfBMnAEVYbAo@vBo@vC[fBYtBWpB|AlBrAbAvB`BfAdArA|ApAzArDzC|C~Dt@bAnAnAlA|@PLjChAn@XhGtCxBb@hCb@RBGP@ROdAO^Mp@MXIj@"));
 //        array.add(new data("Durgam Cheruvu","23","AP17A9845","7:55","9:30","16","59","17.429518229336974", "78.3889411825609","17.43658129370765", "78.71591244569122"));
 //        array.add(new data("Nagole","24","TS13A1265","8:25","8:50","18","03","17.375815358022884", "78.57132617109308","17.43658129370765", "78.71591244569122"));
 //        array.add(new data("Raidurg","25","TS01A7634","8:20","9:20","07","09","17.41999527802678", "78.57631284602414","17.43658129370765", "78.71591244569122"));
@@ -142,6 +149,10 @@ public class DirectionsFragment extends Fragment {
                 else notFound.setAlpha(0f);
             }
         });
+
+
+
+
         return v;
     }
 

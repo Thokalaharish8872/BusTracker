@@ -11,16 +11,35 @@
     <FrameLayout
         android:id="@+id/FrameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"/>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/BottomNavigationView"
-        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:menu="@menu/menu_for_bottm_navigation_view"
+        android:src="@drawable/baseline_login_24"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
         android:layout_alignParentBottom="true"
-        app:labelVisibilityMode="labeled" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:backgroundTint="#4C17A4"
+        app:cardCornerRadius="@dimen/_50sdp"
+        android:layout_marginBottom="@dimen/_20sdp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/BottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_80sdp"
+            android:background="@android:color/transparent"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/menu_for_bottm_navigation_view"/>
+
+    </androidx.cardview.widget.CardView>
 
 
 

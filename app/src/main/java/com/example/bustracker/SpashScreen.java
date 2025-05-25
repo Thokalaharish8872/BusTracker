@@ -24,8 +24,17 @@ public class SpashScreen extends AppCompatActivity {
         ImageView bus = findViewById(R.id.bus);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Users",MODE_PRIVATE);
-        if(sharedPreferences.getBoolean("IsLoggedIn", false)) nextActivity = ActivityForFragments.class;
+        if(sharedPreferences.getBoolean("IsLoggedIn", false)){
+            switch (sharedPreferences.getInt("UserType",0)){
+                case 0 : nextActivity = UserTypeActivity.class; break;
+                case 1 : nextActivity = DriverMainPage.class; break;
+                case 2 : nextActivity = ActivityForFragments.class; break;
+                case 4 : nextActivity = ActivityForAdministrator.class; break;
+                default: nextActivity = SpashScreen.class;
+            }
+        }
         else nextActivity = UserTypeActivity.class;
+
 
         android.view.animation.Animation translate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate);
         bus.startAnimation(translate);

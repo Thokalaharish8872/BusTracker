@@ -3,6 +3,7 @@ package com.example.bustracker;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 public class SignUp extends AppCompatActivity {
+
+    private static boolean pressedDouble = false;
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class SignUp extends AppCompatActivity {
                                 editor.apply();
 
                                 startActivity(new Intent(SignUp.this,ActivityForFragments.class));
+                                finish();
                             }
                             else{
                                 Log.d("error","Failure : "+task.getException());
@@ -70,5 +75,26 @@ public class SignUp extends AppCompatActivity {
         });
 
         loginPagebtn.setOnClickListener(view -> startActivity(new Intent(SignUp.this,Login.class)));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(pressedDouble){
+            super.onBackPressed();
+            return;
+        }
+        Toast.makeText(SignUp.this,"Press again back to exit",Toast.LENGTH_SHORT).show();
+
+        pressedDouble = true;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                pressedDouble = true;
+            }
+        },2000);
+
+
+
     }
 }
