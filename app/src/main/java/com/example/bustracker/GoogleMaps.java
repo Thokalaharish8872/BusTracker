@@ -382,7 +382,7 @@ public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-
+                    
                 }
 //            }
         };
