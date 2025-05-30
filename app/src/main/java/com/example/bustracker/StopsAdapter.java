@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -34,24 +35,39 @@ public class StopsAdapter extends RecyclerView.Adapter<StopsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull StopsAdapter.ViewHolder holder, int position) {
         holder.enterTime.setText(stops.get(position));
-        if (position == 1){
-            Toast.makeText(context,stops.get(position),Toast.LENGTH_SHORT).show();
-            holder.rounded.setBackground(context.getDrawable(R.drawable.round_red));
+        if(position == 0) {
+            holder.rounded.setBackground(ContextCompat.getDrawable(context, R.drawable.round_green));
+            holder.topLine.setAlpha(0f);
+            holder.bottomLine.setAlpha(1f);
+        }
+        else if(position==stops.size()-1){
+            holder.rounded.setBackground(ContextCompat.getDrawable(context, R.drawable.round_red));
+            holder.bottomLine.setAlpha(0f);
+            holder.topLine.setAlpha(1f);
+
+        }
+        else{
+            holder.rounded.setBackground(ContextCompat.getDrawable(context, R.drawable.round_yellow));
+            holder.topLine.setAlpha(1f);
+            holder.bottomLine.setAlpha(1f);
+
         }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return stops.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView enterTime;
-        ImageView rounded;
+        ImageView rounded,topLine,bottomLine;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             enterTime = itemView.findViewById(R.id.enterTime);
             rounded = itemView.findViewById(R.id.rounded);
+            topLine = itemView.findViewById(R.id.topLine);
+            bottomLine = itemView.findViewById(R.id.bottomLine);
         }
     }
 }

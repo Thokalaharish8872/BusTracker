@@ -5,20 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:gravity="center"
+    android:gravity="center">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    android:paddingBottom="@dimen/_30sdp">
-    <ImageView
-        android:id="@+id/rounded"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:src="@drawable/round_green"/>
+        <ImageView
+            android:id="@+id/topLine"
+            android:layout_width="@dimen/_3sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/_8sdp"
+
+            android:src="@drawable/line_bg"
+            app:tint="#312F2F" />
+
+        <ImageView
+            android:id="@+id/rounded"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_below="@+id/topLine"
+            android:background="@drawable/round_green" />
+
+        <ImageView
+            android:id="@+id/bottomLine"
+            android:layout_width="@dimen/_3sdp"
+            android:layout_height="@dimen/_33sdp"
+            android:layout_below="@+id/rounded"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/line_bg"
+            app:tint="#312F2F" />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/_25sdp">
+        android:layout_marginStart="@dimen/_25sdp"
+        android:paddingBottom="@dimen/_30sdp">
 
 
     <TextView

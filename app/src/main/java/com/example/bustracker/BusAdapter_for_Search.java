@@ -104,7 +104,7 @@ public class BusAdapter_for_Search extends RecyclerView.Adapter<BusAdapter_for_S
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             if(menuItem.getTitle().equals("Set As Favourite")){
 
-                                ArrayList<data> arrayList = null;
+                                ArrayList<data> arrayList;
                                 if(json[0] != null) {
                                     arrayList= gson.fromJson(json[0], type);
 
@@ -142,7 +142,6 @@ public class BusAdapter_for_Search extends RecyclerView.Adapter<BusAdapter_for_S
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             if(menuItem.getTitle().equals("Remove From Favourites")) {
-
 
                                 ArrayList<data> arrayList = gson.fromJson(json[0], type);
 
@@ -183,10 +182,26 @@ public class BusAdapter_for_Search extends RecyclerView.Adapter<BusAdapter_for_S
                 if(array.get(pos).BusNumber.equals("08")){
                     waypoints[0]= "via:17.35529372435894, 78.55642408980903";
                 }
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences("Favourites",Context.MODE_PRIVATE);
+
+//
+                Gson gson = new Gson();
+                String[] json2 =  {sharedPreferences.getString("hello", null)};
+                Type type = new TypeToken<ArrayList<data>>() {}.getType();
+
+                ArrayList<data> arrayList = new ArrayList<>();
+
+                arrayList.add(array.get(pos));
+
+                json2[0] = gson.toJson(arrayList, type);
+
+
 //
 
 //                if(array.get(pos).BusNumber.equals("22")) {
-                    Intent i = new Intent(context, ActivityForBus.class);
+                    Intent i = new Intent(context, GoogleMaps.class);
+                    i.putExtra("Array",json2[0]);
                     i.putExtra("NumberPlate", array.get(pos).NumberPlate);
                     i.putExtra("stops", array.get(pos).stops);
                     i.putExtra("Start", array.get(pos).Start);

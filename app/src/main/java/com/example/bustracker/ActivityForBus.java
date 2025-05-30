@@ -46,7 +46,6 @@ public class ActivityForBus extends AppCompatActivity {
         googleMapsFragment = new GoogleMaps();
         busInfoFragment = new BusInfo();
 
-        setFragment(googleMapsFragment);
 
         LinearLayout fullRoute = findViewById(R.id.fullRoute);
         LinearLayout busInfo = findViewById(R.id.BusInfo);
@@ -54,14 +53,14 @@ public class ActivityForBus extends AppCompatActivity {
         fullRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setFragment(googleMapsFragment);
+
             }
         });
 
         busInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setFragment(busInfoFragment);
+
             }
         });
 

@@ -7,7 +7,9 @@ import static android.content.Intent.getIntent;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,7 +34,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -62,9 +67,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -76,7 +84,7 @@ import retrofit2.Response;
 // Add this import
 import com.google.android.gms.maps.model.Polyline;
 
-public class GoogleMaps extends Fragment implements OnMapReadyCallback {
+public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback{
 
     static final int LOCATION_PERMISSION_CODE = 1001;
     // Existing declarations...
@@ -98,36 +106,71 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
     Handler handler;
     Double result;
     BottomSheetBehavior bottomSheetBehavior;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    Gson gson;
+    String[] json;
+    String[] json2;
+    Type type;
+    ArrayList<data> arrayList2 = new ArrayList<>();
+    int pos = 0;
+    ArrayList<data> busDetails = new ArrayList<>();
+    boolean flag = false;
+    ImageButton favourite;
 
 
 
     ArrayList<LatLng> points;
     private Polyline currentPolyline; // ⬅️ added for live polyline update
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v =  inflater.inflate(R.layout.activity_google_maps, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_google_maps);
 
 
 
-        View bottomSheet = v.findViewById(R.id.bottom_sheet);
+        sharedPreferences = getSharedPreferences("Favourites", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        gson = new Gson();
+        json = new String[]{sharedPreferences.getString("Array", null)};
+        type = new TypeToken<ArrayList<data>>() {}.getType();
+
+        Intent i = getIntent();
+        if (i != null) {
+            origin = new LatLng(Double.parseDouble(i.getStringExtra("stLat")), Double.parseDouble(i.getStringExtra("stLon")));
+            json2 = new String[]{i.getStringExtra("Array")};
+
+            waypoints = i.getStringArrayExtra("waypoints");
+            point = i.getStringExtra("points");
+        }
+
+
+
+
+
+
+
+
+        View bottomSheet = findViewById(R.id.bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
-        bottomSheetBehavior.setPeekHeight(400); // Peek height in collapsed state
+        bottomSheetBehavior.setPeekHeight(500); // Peek height in collapsed state
         bottomSheetBehavior.setHideable(false);
         bottomSheetBehavior.setDraggable(true); // REQUIRED to make it draggable
 
 
-//        ImageView call_logo = v.findViewById(R.id.call_logo);
-//        ImageView driver_logo = v.findViewById(R.id.driver_logo);
-//        ImageView bus_logo = v.findViewById(R.id.bus_logo);
+//        ImageView call_logo = findViewById(R.id.call_logo);
+//        ImageView driver_logo = findViewById(R.id.driver_logo);
+//        ImageView bus_logo = findViewById(R.id.bus_logo);
 //        call_logo.setColorFilter(getResources().getColor(R.color.green));
 //        bus_logo.setColorFilter(getResources().getColor(R.color.white));
 //        driver_logo.setColorFilter(getRe
-//        LinearLayout fullRoute = v.findViewById(R.id.fullRoute);
-//        LinearLayout busInfo = v.findViewById(R.id.BusInfo);
+//        LinearLayout fullRoute = findViewById(R.id.fullRoute);
+//        LinearLayout busInfo = findViewById(R.id.BusInfo);
 
 
 
@@ -144,11 +187,38 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        ImageButton infoBtn = findViewById(R.id.btnInfo);
+
+        infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(GoogleMaps.this,BusInfoActivity.class));
+            }
+        });
+
+//        favourite = findViewById(R.id.btnFavourite);
+//
+//
+//        updateFavourite();
+//
+//
+//        favourite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(flag){
+//                    removeFavourite();
+//                }
+//                else{
+//                    setFavourite();
+//                }
+//            }
+//        });
 
 
-        RecyclerView recyclerView = v.findViewById(R.id.recyclerView1);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        RecyclerView recyclerView = findViewById(R.id.recyclerView1);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(GoogleMaps.this));
 
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Lb Nagar");
@@ -163,32 +233,25 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
         arrayList.add("Annojiguda");
         arrayList.add("Secundrabad");
 
-        StopsAdapter adapter = new StopsAdapter(arrayList,getContext());
+        StopsAdapter adapter = new StopsAdapter(arrayList,GoogleMaps.this);
 
         recyclerView.setAdapter(adapter);
 
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(GoogleMaps.this);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        atLoc = v.findViewById(R.id.atLoc);
-        busNumber = v.findViewById(R.id.busNumber);
-        arrivingTime = v.findViewById(R.id.ArrivingTime);
-        distance = v.findViewById(R.id.distance);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        atLoc = findViewById(R.id.atLoc);
+        busNumber = findViewById(R.id.busNumber);
+        arrivingTime = findViewById(R.id.ArrivingTime);
+        distance = findViewById(R.id.distance);
 
-        Intent i = getActivity().getIntent();
-        if (i != null) {
-            origin = new LatLng(Double.parseDouble(i.getStringExtra("stLat")), Double.parseDouble(i.getStringExtra("stLon")));
-            Log.d("error","came");
-            waypoints = i.getStringArrayExtra("waypoints");
-            point = i.getStringExtra("points");
-        }
+
 
         studentEmail = "23ag1a6939@gmail.com";
         database = FirebaseDatabase.getInstance().getReference("Users").child("Bus").child("08").child("Location");
         userPath = FirebaseDatabase.getInstance().getReference("Users").child("students").child(studentEmail.substring(0,studentEmail.length()-10).toUpperCase()).child("location");
 
-        Log.d("error","came2");
 
 //        handler = new Handler();
 
@@ -196,7 +259,6 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
 
         mapFragment.getMapAsync(this);
 
-        return v;
     }
 
     private void handler(){
@@ -213,12 +275,12 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
 
     private void sendNotification() {
 
-        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(ID,"MY NOTIFICATION",IMPORTANCE_HIGH);
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext())
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(GoogleMaps.this)
                     .setSmallIcon(R.drawable.bus_caartoon)
                     .setChannelId(ID)
                     .setContentTitle("Bus Update")
@@ -237,34 +299,28 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("error","came3");
         mMap = googleMap;
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
+        if (ActivityCompat.checkSelfPermission(GoogleMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(GoogleMaps.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_CODE);
         } else {
-            Log.d("error","came4");
 
             startLocationUpdates();
-            Log.d("error","came5");
 
         }
 
         busMarker = createNewMarker(origin, "Bus Location");
 
-        Log.d("error","came6");
 
         collegeMarker = createNewMarker(destination, "Ace Engineering College");
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
 
-        Log.d("error","came7");
 
         points = new ArrayList<>();
         points.addAll(decodePolyline(point));
-        Log.d("error","came8");
 
     }
 
@@ -310,17 +366,16 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
                             location1.setLatitude(destination.latitude);
                             location1.setLongitude(destination.longitude);
 
-                            if (busMarker == null)
+                            if(busMarker == null)
                                 busMarker = createNewMarker(latLng1, "Bus Location");
                             else busMarker.setPosition(latLng1);
 
-                            if(getContext() != null) {
                                 busMarker.setIcon(getBitmapDescriptor(R.drawable.bus_marker));
                                 userMarker.setAnchor(org.osmdroid.views.overlay.Marker.ANCHOR_CENTER, org.osmdroid.views.overlay.Marker.ANCHOR_CENTER);
 
 
                                 drawRemainingPolyline(latLng1);
-                            }
+
                         }
                     }
 
@@ -332,7 +387,7 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
 //            }
         };
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+        if (ActivityCompat.checkSelfPermission(GoogleMaps.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
@@ -466,4 +521,65 @@ public class GoogleMaps extends Fragment implements OnMapReadyCallback {
         Bitmap smallMarker = Bitmap.createScaledBitmap(bitmap, 150, 150, false);
         return BitmapDescriptorFactory.fromBitmap(smallMarker);
     }
+
+    private void setFavourite(){
+
+        busDetails = gson.fromJson(json2[0],type);
+        arrayList2.add(busDetails.get(0));
+        json[0] = gson.toJson(arrayList2, type);
+        updateFavourite();
+    }
+
+    private void removeFavourite(){
+
+        arrayList2.remove(pos);
+        json[0] = gson.toJson(arrayList2, type);
+        updateFavourite();
+
+    }
+
+    private void updateFavourite(){
+        Log.d("error","helo");
+
+        ArrayList<data> arrayList = new ArrayList<>();
+        if(json[0] != null) {
+            Log.d("error",json[0]);
+
+            arrayList= gson.fromJson(json[0], type);
+
+            Log.d("error","he");
+
+            for(int i=0;i<arrayList.size();i++) {
+
+                Log.d("error","holi");
+                if(arrayList.get(i).BusNumber.equals(busDetails.get(0).BusNumber)){
+                    flag = true;
+
+                    Log.d("error","h");
+                    pos = i;
+                    Log.d("SettingColor","true");
+                    favourite.setBackgroundColor(getResources().getColor(R.color.red));
+                    break;
+                }
+            }
+            if(!flag){
+                Log.d("SettingColor","false1");
+
+                favourite.setBackgroundColor(getResources().getColor(R.color.white));
+
+            }
+        }
+        else {
+            Log.d("SettingColor","false2");
+
+            favourite.setBackgroundColor(getResources().getColor(R.color.white));
+        }
+
+        json[0] = gson.toJson(arrayList, type);
+        editor.putString("Array", json[0]);
+        editor.apply();
+
+    }
+
+
 }
