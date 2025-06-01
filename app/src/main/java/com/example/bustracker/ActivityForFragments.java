@@ -2,6 +2,7 @@ package com.example.bustracker;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BlendModeColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -73,20 +74,34 @@ public class ActivityForFragments extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                    if(item.getItemId() == R.id.Home) SetFrame(homeFragment,false,item);
-                    else if(item.getItemId() == R.id.Directions) SetFrame(directionsFragment,false,item);
-                    else if(item.getItemId() == R.id.Favourites) SetFrame(favoritesFragment,false,item);
-                    else if(item.getItemId() == R.id.Rewards) SetFrame(awardsFragment,false,item);
-                    else SetFrame(profileFragment,false,item);
+                SharedPreferences sharedPreferences = getSharedPreferences("Users", MODE_PRIVATE);
+                if (sharedPreferences.getString("isFeePaid", "No").equals("Yes") || sharedPreferences.getString("isFeePaid", "No").equals("Partilally Paid")) {
+
+
+                    if (item.getItemId() == R.id.Home) SetFrame(homeFragment, false, item);
+                    else if (item.getItemId() == R.id.Directions)
+                        SetFrame(directionsFragment, false, item);
+                    else if (item.getItemId() == R.id.Favourites)
+                        SetFrame(favoritesFragment, false, item);
+                    else if (item.getItemId() == R.id.Rewards)
+                        SetFrame(awardsFragment, false, item);
+                    else SetFrame(profileFragment, false, item);
+
+                }else{
+                    Toast.makeText(ActivityForFragments.this,"Please Pay the Fee to Continue with the App",Toast.LENGTH_SHORT).show();
+                }
+
                     return true;
+
             }
         });
     }
 
      void SetFrame(Fragment fragment, boolean flag, MenuItem item) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if(flag) ft.add(R.id.FrameLayout,fragment);
-        else ft.replace(R.id.FrameLayout, fragment);
+
+             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+             if (flag) ft.add(R.id.FrameLayout, fragment);
+             else ft.replace(R.id.FrameLayout, fragment);
 //        scaleAnimation = new ScaleAnimation(1.0f,1.2f,1.0f,1.2f, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
 //
 //        scaleAnimation.setDuration(150);
@@ -94,13 +109,15 @@ public class ActivityForFragments extends AppCompatActivity {
 //        scaleAnimation.setRepeatMode(Animation.REVERSE);
 //
 //         btmView.setAnimation(scaleAnimation);
-         ft.commit();
-        Drawable icon = item.getIcon();
-        if(icon!=null){
-            icon = icon.mutate();
-            icon.setTint(getResources().getColor(R.color.red));
-            item.setIcon(icon);
-        }
-    }
+             ft.commit();
+             Drawable icon = item.getIcon();
+             if (icon != null) {
+                 icon = icon.mutate();
+                 icon.setTint(getResources().getColor(R.color.red));
+                 item.setIcon(icon);
+             }
+         }
 
-}
+
+     }
+

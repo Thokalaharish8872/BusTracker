@@ -34,15 +34,6 @@ public class AwardsFragment extends Fragment {
         stopList = v.findViewById(R.id.stop_list);
         scrollView = v.findViewById(R.id.draggable_scroll);
 
-        // Add stops
-        addStop("10:30", "Reminder 1", "345 Haledon Ave, NJ");
-        addStop("10:45", "Pick up", "345 Haledon Ave, NJ");
-        addStop("11:20", "At School", "345 Haledon Ave, NJ");
-        addStop("16:55", "Reminder 2", "345 Haledon Ave, NJ");
-        addStop("17:10", "Drop", "345 Haledon Ave, NJ");
-
-        // Enable drag
-        enableDrag();
 
         return v;
     }

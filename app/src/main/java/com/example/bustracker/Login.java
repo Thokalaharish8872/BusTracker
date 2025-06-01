@@ -124,6 +124,7 @@ public class Login extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("IsLoggedIn",true);
                 editor.putInt("UserType",2);
+                editor.putString("userName",studentEmail.substring(0,studentEmail.length()-10).toUpperCase());
                 editor.apply();
                 startActivity(new Intent(Login.this,ActivityForFragments.class));
             }

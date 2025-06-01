@@ -345,7 +345,7 @@ public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback
                         userMarker.setIcon(getBitmapDescriptor(R.drawable.student_marker));
                         userMarker.setAnchor(org.osmdroid.views.overlay.Marker.ANCHOR_CENTER, org.osmdroid.views.overlay.Marker.ANCHOR_CENTER);
 
-//                        updateLocationToFirebase(latLng);
+                        updateLocationToFirebase(latLng);
                         location1 = new Location("");
 
 
@@ -366,8 +366,7 @@ public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback
                             location1.setLatitude(destination.latitude);
                             location1.setLongitude(destination.longitude);
 
-                            if(busMarker == null)
-                                busMarker = createNewMarker(latLng1, "Bus Location");
+                            if(busMarker == null) busMarker = createNewMarker(latLng1, "Bus Location");
                             else busMarker.setPosition(latLng1);
 
                                 busMarker.setIcon(getBitmapDescriptor(R.drawable.bus_marker));

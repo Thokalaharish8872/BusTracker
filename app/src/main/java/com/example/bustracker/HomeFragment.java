@@ -11,7 +11,9 @@ import android.app.Notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -26,13 +28,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -42,7 +52,8 @@ public class HomeFragment extends Fragment {
     FloatingActionButton refresh;
     String CHANNEL_ID = "MYCHANNEL";
     Fragment fragment = new ProfileFragment();
-
+    DatabaseReference reference ;
+    String isFeePaid;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +64,39 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.ui_for_home_fragment, container, false);
 
+        CardView cardView = v.findViewById(R.id.cardView);
+
+        SharedPreferences sharedPreferences = v.getContext().getSharedPreferences("Users", Context.MODE_PRIVATE);
+
+        String userName = sharedPreferences.getString("userName","Harish");
+
+        reference = FirebaseDatabase.getInstance().getReference("Users").child("Students").child(userName);
+
+        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(!isAdded()) return;
+                if(task.getResult().exists()){
+                    isFeePaid =  task.getResult().child("isFeePaid").getValue(String.class);
+                    if(isFeePaid.equals("Yes") || isFeePaid.equals("Partially Paid")){
+                        cardView.setBackgroundColor(getResources().getColor(R.color.paleGreen));
+                    }
+                    else{
+                        cardView.setBackgroundColor(getResources().getColor(R.color.red));
+
+                    }
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("isFeePaid",isFeePaid);
+
+                    editor.apply();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
         ImageView profile = v.findViewById(R.id.profile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +110,15 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+
+
+
+
+
+
+
+
 //        RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
 //        refresh = v.findViewById(R.id.refresh);
 //        ImageButton Menubtn = v.findViewById(R.id.MenuBtn);

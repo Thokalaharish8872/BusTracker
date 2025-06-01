@@ -114,8 +114,8 @@ public class DirectionsFragment extends Fragment {
             hour = time.getHour();
         }
 
-        if(hour<12) reverse(true);
-        else reverse(false);
+//        if(hour<12) reverse(true);
+//        else reverse(false);
 
         btnSwap.setOnClickListener(view -> reverse(!from.isFocusable()));
 
