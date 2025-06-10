@@ -46,14 +46,7 @@ public class ProfileFragment extends Fragment {
 
                         editor.apply();
 
-                        if(getActivity().equals(ActivityForFragments.class)) {
-
-                            startActivity(new Intent(getContext(), Login.class));
-                        }
-                        else{
-                            startActivity(new Intent(getContext(), AdministratorLogin.class));
-
-                        }
+                        startActivity(new Intent(getContext(),UserTypeActivity.class));
                         getActivity().finish();
                     }
                 });

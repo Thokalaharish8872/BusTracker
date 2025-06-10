@@ -305,20 +305,14 @@ public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback
             ActivityCompat.requestPermissions(GoogleMaps.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_CODE);
-        } else {
-
-            startLocationUpdates();
-
         }
-
+        else {
+            startLocationUpdates();
+        }
         busMarker = createNewMarker(origin, "Bus Location");
-
-
         collegeMarker = createNewMarker(destination, "Ace Engineering College");
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
-
-
         points = new ArrayList<>();
         points.addAll(decodePolyline(point));
 
@@ -337,19 +331,14 @@ public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
 
-//                for (Location location : locationResult.getLocations()) {
                     LatLng latLng = new LatLng(Objects.requireNonNull(locationResult.getLastLocation()).getLatitude(), locationResult.getLastLocation().getLongitude());
 
                     if (userMarker == null) {
                         userMarker = createNewMarker(latLng, "Your Location");
                         userMarker.setIcon(getBitmapDescriptor(R.drawable.student_marker));
                         userMarker.setAnchor(org.osmdroid.views.overlay.Marker.ANCHOR_CENTER, org.osmdroid.views.overlay.Marker.ANCHOR_CENTER);
-
                         updateLocationToFirebase(latLng);
                         location1 = new Location("");
-
-
-
                     } else {
                         userMarker.setPosition(latLng);
                     }
@@ -366,8 +355,8 @@ public class GoogleMaps extends AppCompatActivity  implements OnMapReadyCallback
                             location1.setLatitude(destination.latitude);
                             location1.setLongitude(destination.longitude);
 
-                            if(busMarker == null) busMarker = createNewMarker(latLng1, "Bus Location");
-                            else busMarker.setPosition(latLng1);
+                            if(busMarker ==  null){busMarker = createNewMarker(latLng1, "Bus Location");}
+                            else {busMarker.setPosition(latLng1);}
 
                                 busMarker.setIcon(getBitmapDescriptor(R.drawable.bus_marker));
                                 userMarker.setAnchor(org.osmdroid.views.overlay.Marker.ANCHOR_CENTER, org.osmdroid.views.overlay.Marker.ANCHOR_CENTER);

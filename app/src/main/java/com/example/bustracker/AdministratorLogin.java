@@ -111,7 +111,7 @@ public class AdministratorLogin extends AppCompatActivity {
             if(task.isSuccessful()){
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("IsLoggedIn",true);
-                editor.putInt("Usertype",4);
+                editor.putInt("UserType",4);
                 editor.apply();
 
                 startActivity(new Intent(AdministratorLogin.this,ActivityForAdministrator.class));

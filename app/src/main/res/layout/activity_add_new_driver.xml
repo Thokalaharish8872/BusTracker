@@ -209,12 +209,23 @@
                         android:text="Joined Year"
                         android:textSize="@dimen/_15sdp" />
 
-                    <Spinner
-                        android:id="@+id/YearSpinner1"
-                        android:layout_marginTop="@dimen/_3sdp"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:background="@drawable/background_for_search"
-                        android:layout_height="@dimen/_40sdp" />
+                        android:layout_height="wrap_content"
+                        app:boxCornerRadiusBottomStart="@dimen/_10sdp"
+                        app:boxCornerRadiusBottomEnd="@dimen/_10sdp"
+                        app:boxCornerRadiusTopStart="@dimen/_10sdp"
+                        app:boxCornerRadiusTopEnd="@dimen/_10sdp"
+
+                        >
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/JoinedYear"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -387,10 +398,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:backgroundTint="#33D9D6"
-                    android:inputType="number"
                     android:paddingStart="@dimen/_20sdp"
                     android:paddingEnd="@dimen/_20sdp"
-                    android:text="Add Student" />
+                    android:text="Add Driver" />
 
             </RelativeLayout>
         </LinearLayout>

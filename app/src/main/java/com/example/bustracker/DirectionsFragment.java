@@ -60,7 +60,7 @@ public class DirectionsFragment extends Fragment {
         TextView notFound = v.findViewById(R.id.notfound);
         ImageView dragBtn = v.findViewById(R.id.dragbtn);
 
-        reverse(true);
+//        reverse(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -151,10 +151,6 @@ public class DirectionsFragment extends Fragment {
                 else notFound.setAlpha(0f);
             }
         });
-
-
-
-
         return v;
     }
 
@@ -172,12 +168,16 @@ public class DirectionsFragment extends Fragment {
         to.setEnabled(!flag);
 
         if(flag) {
-            to.setText(from.getText().toString());
-            from.setText("Ace Engineering College");
-        }
-        else{
             from.setText(to.getText().toString());
             to.setText("Ace Enginnering College");
+
+
+        }
+        else{
+            Toast.makeText(getContext(),"2",Toast.LENGTH_SHORT).show();
+
+            to.setText(from.getText().toString());
+            from.setText("Ace Engineering College");
         }
     }
 }

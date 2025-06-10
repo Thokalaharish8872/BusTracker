@@ -21,11 +21,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp extends AppCompatActivity {
 
     private static boolean pressedDouble = false;
     Handler handler = new Handler();
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,31 +45,14 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String studentEmail = studentIdInputText.getText().toString(), studentPassword = studentPasswordInputText.getText().toString();
+                reference = FirebaseDatabase.getInstance().getReference("Users").child("StudentRequests");
 
                 if(!studentEmail.isEmpty()){
                     if(!studentPassword.isEmpty()){
-                        FirebaseAuth auth = FirebaseAuth.getInstance();
-                        auth.createUserWithEmailAndPassword(studentEmail,studentPassword).addOnCompleteListener(SignUp.this,task -> {
-                            if(task.isSuccessful()){
-                                Toast.makeText(SignUp.this,"Registration Success",Toast.LENGTH_SHORT).show();
-                                SharedPreferences sharedPreferences = getSharedPreferences("Users",MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean("IsLoggedIn",true);
-                                editor.putString("userEmail",studentEmail);
-                                editor.apply();
-
-                                startActivity(new Intent(SignUp.this,ActivityForFragments.class));
-                                finish();
-                            }
-                            else{
-                                Log.d("error","Failure : "+task.getException());
-                                Toast.makeText(SignUp.this,"Failure : "+task.getException(),Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(e -> {
-                            if(e instanceof FirebaseAuthUserCollisionException) Toast.makeText(SignUp.this,"Account Already Exist",Toast.LENGTH_SHORT).show();
-                            if(e instanceof FirebaseAuthWeakPasswordException) Toast.makeText(SignUp.this,"Password too weak",Toast.LENGTH_SHORT).show();
-                            if(e instanceof FirebaseAuthInvalidCredentialsException) Toast.makeText(SignUp.this,"Email not valid",Toast.LENGTH_SHORT).show();
-                        });
+                        Intent i = new Intent(SignUp.this,AddNewStudent.class);
+                        i.putExtra("Email",studentEmail);
+                        i.putExtra("Password",studentPassword);
+                        startActivity(i);
                     }
                     else Toast.makeText(SignUp.this,"Password Cannot be Empty",Toast.LENGTH_SHORT).show();
                 }

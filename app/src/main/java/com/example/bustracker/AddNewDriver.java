@@ -30,6 +30,10 @@ import java.util.ArrayList;
 public class AddNewDriver extends AppCompatActivity {
     DatabaseReference reference;
     FirebaseAuth auth = FirebaseAuth.getInstance();
+    boolean flag = false;
+    String nameStr,emailStr,phoneNoStr,boardingPointStr,idStr,numberPlateStr,joinedYearStr;
+
+    Spinner busNoSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class AddNewDriver extends AppCompatActivity {
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child("Drivers");
 
-        Spinner busNoSpinner = findViewById(R.id.BusNoSpinner1);
+        busNoSpinner = findViewById(R.id.BusNoSpinner1);
         TextInputEditText name = findViewById(R.id.Name1);
         TextInputEditText email = findViewById(R.id.Email1);
         TextInputEditText phoneNo = findViewById(R.id.PhoneNo1);
@@ -47,6 +51,7 @@ public class AddNewDriver extends AppCompatActivity {
         TextInputEditText boardingPoint = findViewById(R.id.BoardingPoint1);
         TextInputEditText numberPlate = findViewById(R.id.NumberPlate1);
         AppCompatButton btn = findViewById(R.id.Btn1);
+        TextInputEditText joinedYear = findViewById(R.id.JoinedYear);
 
         TextView text = findViewById(R.id.text2);
 
@@ -54,6 +59,7 @@ public class AddNewDriver extends AppCompatActivity {
 
 
         if(intent != null && intent.hasExtra("busNo")){
+            flag = true;
 
             btn.setText("Edit");
             text.setText("Edit Driver Details");
@@ -67,11 +73,10 @@ public class AddNewDriver extends AppCompatActivity {
                         email.setText(result.child("email").getValue(String.class));
                         id.setText(result.child("id").getValue(String.class));
                         boardingPoint.setText(result.child("boardingPoint").getValue(String.class));
-
-                        String resultbus = result.child("busNo").getValue(String.class);
+                        joinedYear.setText(result.child("joinedYear").getValue(String.class));
                         for(int i=1;i<=18;i++){
-                            if((i+"").equals(resultbus)){
-                                busNoSpinner.setSelection(i);
+                            if((i+"").equals(intent.getStringExtra("busNo"))){
+                                busNoSpinner.setSelection(i-1);
                                 break;
                             }
                         }
@@ -105,7 +110,13 @@ public class AddNewDriver extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nameStr = name.getText().toString(),emailStr = email.getText().toString(),idStr = id.getText().toString(),boardingPointStr = boardingPoint.getText().toString(),phoneNoStr = phoneNo.getText().toString(),numberPlateStr = numberPlate.getText().toString();
+                nameStr = name.getText().toString();
+                emailStr = email.getText().toString();
+                idStr = id.getText().toString();
+                boardingPointStr = boardingPoint.getText().toString();
+                phoneNoStr = phoneNo.getText().toString();
+                numberPlateStr = numberPlate.getText().toString();
+                joinedYearStr = joinedYear.getText().toString();
                 if(!nameStr.isEmpty()){
                     if(!emailStr.isEmpty()){
                         if(!phoneNoStr.isEmpty()){
@@ -116,19 +127,20 @@ public class AddNewDriver extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 if (task.isSuccessful()) {
-                                                    DetailsDataModel dataModel = new DetailsDataModel(nameStr, emailStr, phoneNoStr, boardingPointStr, idStr, numberPlateStr);
-                                                    reference.child(busNoSpinner.getSelectedItem().toString()).setValue(dataModel);
-                                                    Toast.makeText(AddNewDriver.this, "Driver Added Successfully", Toast.LENGTH_SHORT).show();
-                                                    onBackPressed();
-                                                } else {
-                                                    Toast.makeText(AddNewDriver.this, "Driver Add Failure" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                    editDriver("Added");
                                                 }
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                if (e instanceof FirebaseAuthUserCollisionException)
-                                                    Toast.makeText(AddNewDriver.this, "Account Already Exist", Toast.LENGTH_SHORT).show();
+                                                if (e instanceof FirebaseAuthUserCollisionException) {
+                                                    if(flag){
+                                                        editDriver("Details Updated");
+                                                    }
+                                                    else {
+                                                        Toast.makeText(AddNewDriver.this, "Account Already Exist", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
                                                 if (e instanceof FirebaseAuthWeakPasswordException)
                                                     Toast.makeText(AddNewDriver.this, "Password too weak", Toast.LENGTH_SHORT).show();
                                                 if (e instanceof FirebaseAuthInvalidCredentialsException)
@@ -161,6 +173,25 @@ public class AddNewDriver extends AppCompatActivity {
                 else{
                     Toast.makeText(AddNewDriver.this,"Student Name Cannot be Empty",Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+    private void editDriver(String task1){
+        DetailsDataModel dataModel = new DetailsDataModel(nameStr, emailStr, phoneNoStr, boardingPointStr, idStr, numberPlateStr,joinedYearStr);
+        reference.child(busNoSpinner.getSelectedItem().toString()).setValue(dataModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+
+                Toast.makeText(AddNewDriver.this, "Driver "+task1+" Successfully", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(AddNewDriver.this, "Driver "+task1+" Failure", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

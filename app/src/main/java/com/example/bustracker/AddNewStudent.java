@@ -36,8 +36,12 @@ import java.util.Objects;
 
 public class AddNewStudent extends AppCompatActivity {
 
-    DatabaseReference reference;
+    DatabaseReference reference,reference2;
     FirebaseAuth auth = FirebaseAuth.getInstance();
+    String nameStr,emailStr,idStr,boardingPointStr,feeStructureStr,passValidFromStr,passValidTillStr;
+    Spinner yearSpinner,deptSpinner,busNoSpinner,feePaidSpinner;
+    boolean flag = false;
+    boolean isFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +60,10 @@ public class AddNewStudent extends AppCompatActivity {
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child("Students");
 
-        Spinner yearSpinner = findViewById(R.id.YearSpinner);
-        Spinner deptSpinner = findViewById(R.id.DeptSpinner);
-        Spinner busNoSpinner = findViewById(R.id.BusNoSpinner);
-        Spinner feePaidSpinner = findViewById(R.id.FeePaidSpinner);
+        yearSpinner = findViewById(R.id.YearSpinner);
+        deptSpinner = findViewById(R.id.DeptSpinner);
+        busNoSpinner = findViewById(R.id.BusNoSpinner);
+        feePaidSpinner = findViewById(R.id.FeePaidSpinner);
 
         TextInputEditText name = findViewById(R.id.Name);
         TextInputEditText email = findViewById(R.id.Email);
@@ -75,6 +79,7 @@ public class AddNewStudent extends AppCompatActivity {
 
 
         if(intent != null && intent.hasExtra("Id")){
+            flag = true;
 
             btn.setText("Edit");
             text.setText("Edit Student Details");
@@ -89,14 +94,20 @@ public class AddNewStudent extends AppCompatActivity {
                         id.setText(result.child("id").getValue(String.class));
                         boardingPoint.setText(result.child("boardingPoint").getValue(String.class));
                         feeStructure.setText(result.child("feeStructure").getValue(String.class));
-                        if(result.child("year").equals("Yes")){
+                        if(result.child("isFeePaid").getValue(String.class).equals("Yes")){
                             feePaidSpinner.setSelection(0);
                         }
-                        else if(result.child("year").equals(1)){
+                        else if(result.child("isFeePaid").getValue(String.class).equals("No")){
                             feePaidSpinner.setSelection(1);
                         }
                         else{
                             feePaidSpinner.setSelection(2);
+                        }
+                        switch (result.child("year").getValue(String.class)){
+                            case "I" : yearSpinner.setSelection(0); break;
+                            case "II": yearSpinner.setSelection(1); break;
+                            case "III":yearSpinner.setSelection(2); break;
+                            default: yearSpinner.setSelection(3);
                         }
                         switch (result.child("dept").getValue(String.class)){
                             case   "CSE-A"  :  deptSpinner.setSelection(0);  break;
@@ -148,6 +159,12 @@ public class AddNewStudent extends AppCompatActivity {
             });
 
         }
+        if(intent!=null){
+            isFlag = true;
+            btn.setText("Request Admin for SignUp");
+            text.setText("Sign Up");
+            email.setText(intent.getStringExtra("Email"));
+        }
 
         String[] yearArray = new String[]{"I", "II", "III", "IV"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(AddNewStudent.this, android.R.layout.simple_list_item_1,yearArray);
@@ -188,7 +205,13 @@ public class AddNewStudent extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String nameStr = name.getText().toString(),emailStr = email.getText().toString(),idStr = id.getText().toString(),boardingPointStr = boardingPoint.getText().toString(),feeStructureStr = feeStructure.getText().toString(),passValidFromStr = passValidFrom.getText().toString(),passValidTillStr = passValidTill.getText().toString();
+                nameStr = name.getText().toString();
+                emailStr = email.getText().toString();
+                idStr = id.getText().toString();
+                boardingPointStr = boardingPoint.getText().toString();
+                feeStructureStr = feeStructure.getText().toString();
+                passValidFromStr = passValidFrom.getText().toString();
+                passValidTillStr = passValidTill.getText().toString();
                 if(!nameStr.isEmpty()){
                     if(!emailStr.isEmpty()){
                         if(!idStr.isEmpty()){
@@ -196,29 +219,36 @@ public class AddNewStudent extends AppCompatActivity {
                                 if(!feeStructureStr.isEmpty()) {
                                     if (!passValidFromStr.isEmpty()) {
                                         if(!passValidTillStr.isEmpty()) {
+                                            if (isFlag) {
+                                                reference2 = FirebaseDatabase.getInstance().getReference("Users").child("StudentRequests");
+                                                editStudent("Registration Request Sent", reference2);
+                                            }
+                                            else{
+
                                             auth.createUserWithEmailAndPassword(emailStr, emailStr).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                                     if (task.isSuccessful()) {
-                                                        DetailsDataModel dataModel = new DetailsDataModel(nameStr, emailStr, idStr, boardingPointStr, feeStructureStr, yearSpinner.getSelectedItem().toString(), deptSpinner.getSelectedItem().toString(), busNoSpinner.getSelectedItem().toString(), feePaidSpinner.getSelectedItem().toString(),passValidFromStr,passValidTillStr);
-                                                        reference.child(idStr).setValue(dataModel);
-                                                        Toast.makeText(AddNewStudent.this, "Student Added Successfully", Toast.LENGTH_SHORT).show();
-                                                        onBackPressed();
-                                                    } else {
-                                                        Toast.makeText(AddNewStudent.this, "Student Add Failure" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                        editStudent("Added", reference);
                                                     }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    if (e instanceof FirebaseAuthUserCollisionException)
-                                                        Toast.makeText(AddNewStudent.this, "Account Already Exist", Toast.LENGTH_SHORT).show();
+                                                    if (e instanceof FirebaseAuthUserCollisionException) {
+                                                        if (flag) {
+                                                            editStudent("Details Updated", reference);
+                                                        } else {
+                                                            Toast.makeText(AddNewStudent.this, "Account Already Exist", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
                                                     if (e instanceof FirebaseAuthWeakPasswordException)
                                                         Toast.makeText(AddNewStudent.this, "Password too weak", Toast.LENGTH_SHORT).show();
                                                     if (e instanceof FirebaseAuthInvalidCredentialsException)
                                                         Toast.makeText(AddNewStudent.this, "Email not valid", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
+                                        }
                                         }else{
                                             Toast.makeText(AddNewStudent.this,"Pass Valid Till cannot be Empty",Toast.LENGTH_SHORT).show();
 
@@ -255,6 +285,11 @@ public class AddNewStudent extends AppCompatActivity {
                 }
             }
         });
-
+    }
+   private void editStudent(String task,DatabaseReference reference){
+        DetailsDataModel dataModel = new DetailsDataModel(nameStr, emailStr, idStr, boardingPointStr, feeStructureStr, yearSpinner.getSelectedItem().toString(), deptSpinner.getSelectedItem().toString(), busNoSpinner.getSelectedItem().toString(), feePaidSpinner.getSelectedItem().toString(),passValidFromStr,passValidTillStr);
+        reference.child(idStr).setValue(dataModel);
+        Toast.makeText(AddNewStudent.this, "Student "+task+" Successfully", Toast.LENGTH_SHORT).show();
+        onBackPressed();
     }
 }
